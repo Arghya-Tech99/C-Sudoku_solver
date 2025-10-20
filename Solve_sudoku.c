@@ -15,18 +15,26 @@ int puzzle[9][9] = {
 
 void printPuzzle(int puzzle[9][9]); // Prints the final solved sudoku
 int validPuzzle(int puzzle[9][9], int row, int col, int val); // Checks validity when 'val' is placed in puzzle[row][col]
-
-
+int solvePuzzle(int puzzle[9][9], int row, int col);
 
 int main() {
   printf("\n WELCOME TO SUDOKU SOLVER\n");
   printf("Original Puzzle : ");
   printPuzzle(puzzle);
   // Checking validPuzzle- place desired values of val in puzzle[row][col]
-  int valid = validPuzzle(puzzle, 0, 1, 5);
-  if (valid == 1) {
-    printf("\n VALID MOVE\n");
-  } else printf("\n INVALID MOVE\n");
+  // int valid = validPuzzle(puzzle, 0, 1, 5);
+  // if (valid == 1) {
+  //   printf("\n VALID MOVE\n");
+  // } else printf("\n INVALID MOVE\n");
+  
+  // Solve the given puzzle using recursion
+  solvePuzzle(puzzle, 0, 0);
+  if (solvePuzzle(puzzle, 0, 0)) { // print the solution
+    printf("\n The puzzle is solved: ");
+    printPuzzle(puzzle); 
+  } else {
+    printf("\n This puzzle is not Solvable\n");
+  }
 
   return 0;
 }
@@ -83,4 +91,29 @@ int validPuzzle(int puzzle[9][9], int row, int col, int val) {
   }
 
   return 1; // vALID MOVE
+}
+
+int solvePuzzle(int puzzle[9][9], int row, int col) {
+  if (col == 9) {
+    if (row == 8) {
+      return 1; // Puzzle solved
+    }
+    row++;
+    col = 0;
+  }
+
+  if (puzzle[row][col] > 0) {
+    return solvePuzzle(puzzle, row, col + 1);
+  }
+
+  for (int i = 1; i <= 9; i++) {
+    if (validPuzzle(puzzle, row, col, i)) {
+      puzzle[row][col] = i;
+      if (solvePuzzle(puzzle, row, col + 1)) {
+        return 1;
+      }
+      puzzle[row][col] = 0;
+    }
+  }
+  return 0;
 }
